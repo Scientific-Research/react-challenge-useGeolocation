@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+function useGeolocation() {}
+
+export default function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [countClicks, setCountClicks] = useState(0);
+  const [position, setPosition] = useState({});
+  const [error, setError] = useState(null);
+
+  const { lat, lng } = position;
+
+  function getPosition() {
+    setCountClicks((count) => count + 1);
+
+    if (!navigator.geolocation)
+      return setError("Your browser does not support geolocation");
+
+    setIsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setPosition({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+        setIsLoading(false);
+      },
+      (error) => {
+        setError(error.message);
+        setIsLoading(false);
+      }
+    );
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
-}
+    <div>
+      <button onClick={getPosition} disabled={isLoading}>
+        Get my position
+      </button>
 
-export default App
+      {isLoading && <p>Loading position...</p>}
+      {error && <p>{error}</p>}
+      {!isLoading && !error && lat && lng && (
+        <p>
+          Your GPS position:{" "}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://www.openstreetmap.org/#map=16/${lat}/${lng}`}
+          >
+            {lat}, {lng}
+          </a>
+        </p>
+      )}
+
+      <p>You requested position {countClicks} times</p>
+    </div>
+  );
+}
