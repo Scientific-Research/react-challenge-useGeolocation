@@ -2,11 +2,16 @@ import { useState } from "react";
 
 function useGeolocation() {}
 
+interface IPosition {
+  lat: number;
+  lng: number;
+}
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [countClicks, setCountClicks] = useState(0);
-  const [position, setPosition] = useState({});
-  const [error, setError] = useState(null);
+  const [position, setPosition] = useState<IPosition>({ lat: 0, lng: 0 });
+  const [error, setError] = useState<string | null>(null);
 
   const { lat, lng } = position;
 
@@ -21,11 +26,11 @@ export default function App() {
       (pos) => {
         setPosition({
           lat: pos.coords.latitude,
-          lng: pos.coords.longitude
+          lng: pos.coords.longitude,
         });
         setIsLoading(false);
       },
-      (error) => {
+      (error: any) => {
         setError(error.message);
         setIsLoading(false);
       }
