@@ -1,40 +1,42 @@
 import { useState } from "react";
 
-function useGeolocation() {}
+// function useGeolocation(lat: number, lng: number) {}
+import { useGeolocation } from "./hooks/useGeolocation";
 
-interface IPosition {
-  lat: number;
-  lng: number;
-}
+// interface IPosition {
+//   lat: number;
+//   lng: number;
+// }
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(false);
   const [countClicks, setCountClicks] = useState(0);
-  const [position, setPosition] = useState<IPosition>({ lat: 0, lng: 0 });
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [position, setPosition] = useState<IPosition>({ lat: 0, lng: 0 });
+  // const [error, setError] = useState<string | null>(null);
 
+  const { isLoading, position, error } = useGeolocation();
   const { lat, lng } = position;
 
   function getPosition() {
     setCountClicks((count) => count + 1);
 
-    if (!navigator.geolocation)
-      return setError("Your browser does not support geolocation");
+    //   if (!navigator.geolocation)
+    //     return setError("Your browser does not support geolocation");
 
-    setIsLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setPosition({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
-        setIsLoading(false);
-      },
-      (error: any) => {
-        setError(error.message);
-        setIsLoading(false);
-      }
-    );
+    //   setIsLoading(true);
+    //   navigator.geolocation.getCurrentPosition(
+    //     (pos) => {
+    //       setPosition({
+    //         lat: pos.coords.latitude,
+    //         lng: pos.coords.longitude,
+    //       });
+    //       setIsLoading(false);
+    //     },
+    //     (error: any) => {
+    //       setError(error.message);
+    //       setIsLoading(false);
+    //     }
+    //   );
   }
 
   return (
